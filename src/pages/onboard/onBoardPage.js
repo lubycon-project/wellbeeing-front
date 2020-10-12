@@ -66,7 +66,7 @@ class OnBoardPage extends Component {
 
     onSubmitInput = () => {
         const { dietRequestForm } = this.state;
-        axios.post('넵 api/todayDietList', { dietRequestForm: dietRequestForm
+        axios.post('api/todayDietList', { dietRequestForm: dietRequestForm
         })
             .then(response => {
                 console.log(response);
