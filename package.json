@@ -2,7 +2,6 @@
   "name": "wellbeeing",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://api.wellbeeing.xyz/",
   "dependencies": {
     "@fullcalendar/bootstrap": "^4.3.0",
     "@fullcalendar/daygrid": "^4.3.0",
@@ -16,6 +15,7 @@
     "@testing-library/user-event": "^7.1.2",
     "@toast-ui/react-chart": "^1.0.2",
     "@vtaits/react-color-picker": "^0.1.1",
+    "antd": "^4.7.0",
     "apexcharts": "^3.17.0",
     "availity-reactstrap-validation": "^2.6.1",
     "axios": "^0.20.0",
@@ -71,7 +71,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-script": "^2.0.5",
-    "react-scripts": "3.4.3",
+    "react-scripts": "2.0.3",
     "react-select": "^3.0.8",
     "react-sparklines": "^1.7.0",
     "react-star-ratings": "^2.3.0",
@@ -109,6 +109,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ],
-    "proxy": "http://api.wellbeeing.xyz/"
-  }
+  },
 }

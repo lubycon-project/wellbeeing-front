@@ -17,6 +17,17 @@ class OnBoardPage extends Component {
             activeTab: 1,
             activeTabProgress: 1,
             progressValue: 25,
+            dietRequestForm: {
+                activeMetabolism: 'ACTIVE_LV0', // 활동대사량
+                age: 0, // 나이
+                bodyFatWeight: 0, // 체지방량
+                dietType: 'DECREASE_WEIGHT', // 식단 유형
+                gender: 'MAN',  // 성별
+                height: 0, // 키
+                physiqueWeight: 0, // 골격근량
+                weight: 0,  // 체중
+
+            }
         };
 
         this.toggleTab.bind(this);
@@ -53,8 +64,9 @@ class OnBoardPage extends Component {
         }
     }
 
-    onClick = () => {
-        axios.post('api/todayDietList', {
+    onSubmitInput = () => {
+        const { dietRequestForm } = this.state;
+        axios.post('넵 api/todayDietList', { dietRequestForm: dietRequestForm
         })
             .then(response => {
                 console.log(response);
@@ -62,13 +74,23 @@ class OnBoardPage extends Component {
             })
             .catch(error => {
                 console.log("Error");
-                this.handleGoHome();
             });
-    }
+    };
 
     handleGoHome = () => {
         this.props.history.push('/main');
-    }
+    };
+
+    onChangeInput = async (type, input) => {
+        const { dietRequestForm } = this.state;
+        dietRequestForm[type] = input;
+        this.setState({
+            dietRequestForm,
+        }, () => {
+            console.log('dietRequestForm');
+            console.log(dietRequestForm);
+        });
+    };
 
     render() {
         return (
@@ -131,19 +153,34 @@ class OnBoardPage extends Component {
                                               <FormGroup>
                                                   <label htmlFor="example-text-input" className="col-md-2 col-form-label">체중</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="체중을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="체중을 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('weight', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
                                                   <label htmlFor="example-text-input" className="col-md-2 col-form-label">골격근량</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="골격근량을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="골격근량을 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('physiqueWeight', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
                                                   <label htmlFor="example-text-input" className="col-md-2 col-form-label">체지방량</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="체지방량을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="체지방량을 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('bodyFatWeight', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
@@ -177,7 +214,11 @@ class OnBoardPage extends Component {
                                                   </div>
                                               </FormGroup>
                                               <Button> 이전 </Button>
-                                              <Button type="submit" onClick={() => this.onClick()}> 저장 </Button>
+                                              <Button
+                                                  type="submit"
+                                                  onClick={() => this.onSubmitInput()}>
+                                                  저장
+                                              </Button>
                                           </CardBody>
                                       </Card>
                                   </Col>
