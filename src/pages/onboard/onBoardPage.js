@@ -17,7 +17,7 @@ class OnBoardPage extends Component {
             activeTab: 1,
             activeTabProgress: 1,
             progressValue: 25,
-            dietRequestForm: {
+            dietRequest: {
                 activeMetabolism: 'ACTIVE_LV0', // 활동대사량
                 age: 0,                         // 나이
                 bodyFatWeight: 0,               // 체지방량
@@ -67,25 +67,29 @@ class OnBoardPage extends Component {
 
     // https://api.wellbeeing.xyz/api/today-diet
     onSubmitInput = () => {
-        const { dietRequestForm } = this.state;
+        const { dietRequest } = this.state;
         console.log('=parameter==');
-        console.log(dietRequestForm);
+        console.log(dietRequest);
         console.log('=parameter==');
-        axios.post('https://api.wellbeeing.xyz/api/today-diet', { dietRequestForm: dietRequestForm
-        })
+        // axios.post('/api/week-diet', { dietRequest: dietRequest
+        // })
+        //     .then(response => {
+        //         const { dietList } = response.data;
+        //         console.log('===');
+        //         console.log(response.data);
+        //         console.log(dietList);
+        //         console.log('===');
+        //         this.setState({
+        //             dietList: dietList,
+        //         })
+        //         // this.handleGoHome();
+        //     })
+        //     .catch(error => {
+        //         console.log("Error");
+        //     });
+        axios.get('https://jsonplaceholder.typicode.com/users')
             .then(response => {
-                const { dietList } = response.data;
-                console.log('===');
-                console.log(response.data);
-                console.log(dietList);
-                console.log('===');
-                this.setState({
-                    dietList: dietList,
-                })
-                // this.handleGoHome();
-            })
-            .catch(error => {
-                console.log("Error");
+                console.log(response);
             });
     };
 
@@ -94,10 +98,10 @@ class OnBoardPage extends Component {
     };
 
     onChangeInput = async (type, input) => {
-        const { dietRequestForm } = this.state;
-        dietRequestForm[type] = input;
+        const { dietRequest } = this.state;
+        dietRequest[type] = input;
         this.setState({
-            dietRequestForm,
+            dietRequest,
         });
     };
 
