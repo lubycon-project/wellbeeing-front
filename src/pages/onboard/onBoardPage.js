@@ -26,9 +26,16 @@ class OnBoardPage extends Component {
                 height: 0,                      // 키
                 physiqueWeight: 0,              // 골격근량
                 weight: 0,                      // 체중
-
+            },
+            inbodyRequest: {
+                bodyFatWeight: 30,
+                gender: "MAN",
+                height: 172,
+                physiqueWeight: 30,
+                weight: 80,
             },
             dietList: [],
+            inbodyResult: [],
         };
 
         this.toggleTab.bind(this);
@@ -67,34 +74,19 @@ class OnBoardPage extends Component {
 
     // https://api.wellbeeing.xyz/api/today-diet
     onSubmitInput = () => {
-        const { dietRequest } = this.state;
+        const { dietRequest, inbodyRequest } = this.state;
         console.log('=parameter==');
         console.log(dietRequest);
         console.log('=parameter==');
-        // axios.post('/api/week-diet', { dietRequest: dietRequest
-        // })
-        //     .then(response => {
-        //         const { dietList } = response.data;
-        //         console.log('===');
-        //         console.log(response.data);
-        //         console.log(dietList);
-        //         console.log('===');
-        //         this.setState({
-        //             dietList: dietList,
-        //         })
-        //         // this.handleGoHome();
-        //     })
-        //     .catch(error => {
-        //         console.log("Error");
-        //     });
-        axios.get('https://jsonplaceholder.typicode.com/users')
-            .then(response => {
-                console.log(response);
-            });
+        this.handleGoHome(dietRequest, inbodyRequest);
     };
 
-    handleGoHome = () => {
-        this.props.history.push('/main');
+    handleGoHome = (dietRequest, inbodyRequest) => {
+        // this.props.history.push('/main');
+        this.props.history.push({
+            pathname: '/main',
+            state: { dietRequest, inbodyRequest }
+        });
     };
 
     onChangeInput = async (type, input) => {

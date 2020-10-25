@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import InbodyProfile from "./InbodyProfile";
 import InbodyList from "./InbodyList";
+import axios from "axios";
 
 const styles = theme => ({
     root: {
@@ -30,21 +31,79 @@ class Main extends Component {
         super(props);
         this.state = {
             diet: [
-                { title: "아침", iconClass: "bx bx-sun", description: "삶은 고구마&감자 410Kcal" },
-                { title: "점심", iconClass: "bx bx-star", description: "삶은 고구마&감자" },
-                { title: "저녁", iconClass: "bx bx-moon", description: "삶은 고구마&감자" }
+                {title: "아침", iconClass: "bx bx-sun", description: "삶은 고구마&감자 410Kcal"},
+                {title: "점심", iconClass: "bx bx-star", description: "삶은 고구마&감자"},
+                {title: "저녁", iconClass: "bx bx-moon", description: "삶은 고구마&감자"}
             ],
             email: [
-                { title: "Week", linkto: "#", isActive: false },
-                { title: "Month", linkto: "#", isActive: false },
-                { title: "Year", linkto: "#", isActive: true }
+                {title: "Week", linkto: "#", isActive: false},
+                {title: "Month", linkto: "#", isActive: false},
+                {title: "Year", linkto: "#", isActive: true}
             ],
             modal: false,
             expanded: '',
             setExpanded: '',
+            todayDietList: [],
+            weekDietList: [],
+            inbodyResult: [],
         };
         this.togglemodal.bind(this);
     }
+
+    componentDidMount() {
+        console.log('=== main ===');
+        console.log(this.props);
+        console.log(this.props.history);
+        const { dietRequest, inbodyRequest } = this.props.location.state;
+        this.lazyLoading(dietRequest, inbodyRequest);
+    }
+
+    lazyLoading = (dietRequest, inbodyRequest) => {
+        // 오늘의 식단 리스트 넘기기
+        axios.post('https://api.wellbeeing.xyz/api/today-diet', dietRequest)
+            .then(response => {
+                const { dietList } = response.data;
+                console.log('===');
+                console.log(response.data);
+                console.log('===');
+                this.setState({
+                    todayDietList: dietList[0].oneDayDietList,
+                })
+            })
+            .catch(error => {
+                console.log("Error");
+            });
+
+        // 이번주 식단
+        axios.post('https://api.wellbeeing.xyz/api/week-diet', dietRequest)
+            .then(response => {
+                const { dietList } = response.data;
+                console.log('===');
+                console.log(response.data);
+                console.log('===');
+                this.setState({
+                    weekDietList: dietList,
+                })
+            })
+            .catch(error => {
+                console.log("Error");
+            });
+
+        // 인바디 정보
+        axios.post('https://api.wellbeeing.xyz/api/inbody-result', inbodyRequest)
+            .then(response => {
+                const { inbodyResult } = response.data;
+                console.log('===');
+                console.log(response.data);
+                console.log('===');
+                this.setState({
+                    inbodyResult: inbodyResult,
+                })
+            })
+            .catch(error => {
+                console.log("Error");
+            });
+    };
 
     handleChange = (panel) => (event, isExpanded) => {
         this.setState({
@@ -61,6 +120,20 @@ class Main extends Component {
     render() {
         const { classes } = this.props;
         const { expanded } = this.state;
+        const { todayDietList } = this.state;
+        console.log('== render ==');
+        console.log(todayDietList);
+        console.log('== render ==');
+        const today = todayDietList.map((today) => {
+            console.log(today);
+            let food;
+            food = today.foodList.map((food) => food.name)
+            return {
+                type: today.type,
+                foodList: food[0],
+            }
+        });
+        console.log(today);
         return (
             <React.Fragment>
                 <div className="page-content">
@@ -69,19 +142,19 @@ class Main extends Component {
                             <Col xl="8">
                                 <Row>
                                     {
-                                        this.state.diet.map((diet, key) =>
+                                        today.map((diet, key) =>
                                             <Col md="4" key={"_col_" + key}>
                                                 <Card className="mini-stats-wid">
                                                     <CardBody>
                                                         <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                                                 <span className="avatar-title">
-                                                                    <i className={"bx " + diet.iconClass + " font-size-24"}></i>
+                                                                    <i className={"bx " + "bx bx-sun" + " font-size-24"}></i>
                                                                 </span>
                                                         </div>
                                                         <Media>
                                                             <Media body>
-                                                                <p className="text-muted font-weight-medium">{diet.title}</p>
-                                                                <h4 className="mb-0">{diet.description}</h4>
+                                                                <p className="text-muted font-weight-medium">{diet.type}</p>
+                                                                <h4 className="mb-0">{diet.foodList}</h4>
                                                             </Media>
                                                         </Media>
                                                     </CardBody>
