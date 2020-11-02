@@ -5,3 +5,73 @@
         fill: $text-muted !important;
     }
 }
+
+//Card
+
+.card-body {
+    box-shadow: 0px 0px 30px rgba(34, 34, 34, 0.08);
+    border-radius: 1.25rem;
+}
+
+
+
+.card {
+    border-radius: 1.25rem;
+}
+
+//card-body에 다 묶여있어서 div 구조를 바꿔야할듯.??
+.col-xl-8 .card:hover {
+    background:
+    linear-gradient(139.94deg, #29CEB8 11.45%, #1EE096 87.01%);
+
+    box-shadow:
+    0px 10px 30px rgba(0, 163, 86, 0.12),
+    0px 32px 60px rgba(0, 200, 92, 0.33);
+}
+
+
+
+
+
+//Accordian
+//expand 되기 전 클래스를 못찾겠음.
+
+.MuiAccordion-root.Mui-expanded {
+    margin: 0.6rem 0;
+    border-radius: 1.25rem;
+    background: #F6FFF7;
+    box-shadow: 0px 0px 30px rgba(34, 34, 34, 0.08);
+}
+
+.MuiAccordion-root {
+    margin: 0.6rem 0;
+}
+.MuiAccordion-rounded {
+    border-radius: 0.75rem;
+}
+
+//page
+
+.page-content {
+    //padding: calc(70px + 24px) calc(24px / 2) 60px calc(24px / 2);
+    background: #FFF;
+    background-image: url("https://s3.us-west-2.amazonaws.com/secure.notion-static.com/4a87456e-0f8a-4844-b5e6-4e31a09cf141/ptrn.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20201101%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20201101T052253Z&X-Amz-Expires=86400&X-Amz-Signature=efb84505ce43096c1a2d6eb9cd0fb97108228e1822678728357625c77761c3d4&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22ptrn.png%22");
+    background-repeat: no-repeat;
+    background-size: cover;
+
+}
+
+
+//avater
+
+.avatar-title {
+    align-items: center;
+    background-color: #fff;
+    color: #222;
+    display: flex;
+    font-weight: 500;
+    height: 100%;
+    justify-content: center;
+    width: 100%;
+}
+

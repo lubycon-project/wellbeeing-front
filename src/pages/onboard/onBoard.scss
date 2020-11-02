@@ -1,4 +1,42 @@
 @import "../../assets/scss/theme.scss";
 
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+
+    text-align: center;
+}
+
+.onboardingForm .card-body {
+    background: #fff;
+    box-shadow: 0px 0px 30px rgba(34, 34, 34, 0.08);
+    border-radius: 0rem 0rem 1.25rem 1.25rem;
+    position: absolute;
+    left: 33%;
+    top: 28%;
+    padding: 60px 19px;
+}
 
 
+.topImage {
+position: absolute;
+left: 33%;
+top: 0%;
+z-index: 1;
+}
+
+.onboarding2 .card-body{
+background: #fff
+}
+
+.nav-pills .nav-link {
+    border-radius: 1.25rem;
+    padding: 20px 72px;
+    margin-left: 8px
+
+}
+
+.checkout-tabs .row {
+    display: flex;
+    flex-wrap: wrap;
+vertical-align: middle;
+    margin-left: 15%;
+}

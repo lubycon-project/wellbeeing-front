@@ -78,16 +78,21 @@ class OnBoardPage extends Component {
                       <TabContent activeTab={this.state.activeTab} className="twitter-bs-wizard-tab-content">
                           <TabPane tabId={1}>
                               <div className="onboardingForm">
+                              <div className="topImage">
+                              <img src="https://bit.ly/3eqPG01" alt="pic"></img>
+                              </div>
+                              <div class="card-body">
                                   <h2> 반갑습니다. </h2>
                                   <h3> 인바디 정보를 입력하고 웰비잉의 건강식단을 받아보세요! </h3>
+                                  </div>
                               </div>
                           </TabPane>
                           <TabPane tabId={2}>
                               <div className="checkout-tabs">
                                   <h3> 식단 유형을 선택해주세요. </h3>
                                   <Row>
-                                      <Col lg="2">
-                                          <Nav className="flex-column" pills>
+                                      <Row lg="1">
+                                          <Nav className="flex-row" pills>
                                               <NavItem>
                                                   <NavLink
                                                       className={classnames({ active: this.state.activeTab === '1' })}
@@ -116,7 +121,7 @@ class OnBoardPage extends Component {
                                                   </NavLink>
                                               </NavItem>
                                           </Nav>
-                                      </Col>
+                                      </Row>
                                   </Row>
                               </div>
                           </TabPane>
@@ -124,6 +129,7 @@ class OnBoardPage extends Component {
                               <Form>
                               <Row>
                                   <Col>
+                                  <div className="onboarding2">
                                       <Card>
                                           <CardBody>
                                               <CardTitle> 인바디 정보 입력 </CardTitle>
@@ -180,6 +186,7 @@ class OnBoardPage extends Component {
                                               <Button type="submit" onClick={() => this.onClick()}> 저장 </Button>
                                           </CardBody>
                                       </Card>
+                                      </div>
                                   </Col>
                               </Row>
                               </Form>
