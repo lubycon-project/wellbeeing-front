@@ -11,6 +11,11 @@ class InbodyProfile extends Component {
     }
 
     render() {
+        const { inbodyResult } = this.props;
+        console.log('== chart ==');
+        console.log(inbodyResult);
+        console.log('== chart ==');
+
         return (
             <React.Fragment> <Card>
                 <CardBody>
@@ -20,7 +25,7 @@ class InbodyProfile extends Component {
                     <Row>
                         <Col sm="12">
                             <div className="mt-4 mt-sm-0">
-                                <ApexRadial />
+                                <ApexRadial inbodyResult={inbodyResult} />
                             </div>
                         </Col>
                     </Row>

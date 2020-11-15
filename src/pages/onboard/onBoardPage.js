@@ -17,6 +17,25 @@ class OnBoardPage extends Component {
             activeTab: 1,
             activeTabProgress: 1,
             progressValue: 25,
+            dietRequest: {
+                activeMetabolism: 'ACTIVE_LV0', // 활동대사량
+                age: 0,                         // 나이
+                bodyFatWeight: 0,               // 체지방량
+                dietType: 'DECREASE_WEIGHT',    // 식단 유형
+                gender: '',                     // 성별
+                height: 0,                      // 키
+                physiqueWeight: 0,              // 골격근량
+                weight: 0,                      // 체중
+            },
+            inbodyRequest: {
+                bodyFatWeight: 30,
+                gender: "MAN",
+                height: 172,
+                physiqueWeight: 30,
+                weight: 80,
+            },
+            dietList: [],
+            inbodyResult: [],
         };
 
         this.toggleTab.bind(this);
@@ -53,22 +72,30 @@ class OnBoardPage extends Component {
         }
     }
 
-    onClick = () => {
-        axios.post('api/todayDietList', {
-        })
-            .then(response => {
-                console.log(response);
-                this.handleGoHome();
-            })
-            .catch(error => {
-                console.log("Error");
-                this.handleGoHome();
-            });
-    }
+    // https://api.wellbeeing.xyz/api/today-diet
+    onSubmitInput = () => {
+        const { dietRequest, inbodyRequest } = this.state;
+        console.log('=parameter==');
+        console.log(dietRequest);
+        console.log('=parameter==');
+        this.handleGoHome(dietRequest, inbodyRequest);
+    };
 
-    handleGoHome = () => {
-        this.props.history.push('/main');
-    }
+    handleGoHome = (dietRequest, inbodyRequest) => {
+        // this.props.history.push('/main');
+        this.props.history.push({
+            pathname: '/main',
+            state: { dietRequest, inbodyRequest }
+        });
+    };
+
+    onChangeInput = async (type, input) => {
+        const { dietRequest } = this.state;
+        dietRequest[type] = input;
+        this.setState({
+            dietRequest,
+        });
+    };
 
     render() {
         return (
@@ -137,53 +164,74 @@ class OnBoardPage extends Component {
                                               <FormGroup>
                                                   <label htmlFor="example-text-input" className="col-md-2 col-form-label">체중</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="체중을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="체중을 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('weight', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
-                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">골격근량</label>
+                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">나이</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="골격근량을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="나이를 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('age', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
-                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">체지방량</label>
+                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">성별</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="체지방량을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="성별을 입력해주세요. (ex. MAN/WOMAN) "
+                                                          onChange={(e) => this.onChangeInput('gender', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
-                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">다리근육량</label>
+                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">키(cm)</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="다리근육량을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="키를 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('height', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
-                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">팔근육량</label>
+                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">골격근량(kg)</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="팔근육량을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="골격근량을 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('physiqueWeight', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <FormGroup>
-                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">BMI</label>
+                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">체지방량(kg)</label>
                                                   <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="BMI을 입력해주세요. " />
-                                                  </div>
-                                              </FormGroup>
-                                              <FormGroup>
-                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">체지방률</label>
-                                                  <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="체지방률을 입력해주세요. " />
-                                                  </div>
-                                              </FormGroup>
-                                              <FormGroup>
-                                                  <label htmlFor="example-text-input" className="col-md-2 col-form-label">세포외수분비</label>
-                                                  <div className="col-md-10">
-                                                      <input className="form-control" type="text" placeholder="세포외수분비을 입력해주세요. " />
+                                                      <input
+                                                          className="form-control"
+                                                          type="text"
+                                                          placeholder="체지방량을 입력해주세요. "
+                                                          onChange={(e) => this.onChangeInput('bodyFatWeight', e.target.value)}
+                                                      />
                                                   </div>
                                               </FormGroup>
                                               <Button> 이전 </Button>
-                                              <Button type="submit" onClick={() => this.onClick()}> 저장 </Button>
+                                              <Button
+                                                  onClick={() => this.onSubmitInput()}>
+                                                  저장
+                                              </Button>
                                           </CardBody>
                                       </Card>
                                       </div>

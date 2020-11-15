@@ -9,6 +9,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 import InbodyProfile from "./InbodyProfile";
 import InbodyList from "./InbodyList";
+import axios from "axios";
 
 const styles = theme => ({
     root: {
@@ -30,21 +31,67 @@ class Main extends Component {
         super(props);
         this.state = {
             diet: [
-                { title: "아침", iconClass: "bx bx-sun", description: "삶은 고구마&감자 410Kcal" },
-                { title: "점심", iconClass: "bx bx-star", description: "삶은 고구마&감자" },
-                { title: "저녁", iconClass: "bx bx-moon", description: "삶은 고구마&감자" }
+                {title: "아침", iconClass: "bx bx-sun", description: "삶은 고구마&감자 410Kcal"},
+                {title: "점심", iconClass: "bx bx-star", description: "삶은 고구마&감자"},
+                {title: "저녁", iconClass: "bx bx-moon", description: "삶은 고구마&감자"}
             ],
             email: [
-                { title: "Week", linkto: "#", isActive: false },
-                { title: "Month", linkto: "#", isActive: false },
-                { title: "Year", linkto: "#", isActive: true }
+                {title: "Week", linkto: "#", isActive: false},
+                {title: "Month", linkto: "#", isActive: false},
+                {title: "Year", linkto: "#", isActive: true}
             ],
             modal: false,
             expanded: '',
             setExpanded: '',
+            todayDietList: [],
+            weekDietList: [],
+            inbodyResult: [],
         };
         this.togglemodal.bind(this);
     }
+
+    componentDidMount() {
+        const { dietRequest, inbodyRequest } = this.props.location.state;
+        this.lazyLoading(dietRequest, inbodyRequest);
+    }
+
+    lazyLoading = (dietRequest, inbodyRequest) => {
+        // 오늘의 식단 리스트 넘기기
+        axios.post('https://api.wellbeeing.xyz/api/today-diet', dietRequest)
+            .then(response => {
+                const { dietList } = response.data;
+                this.setState({
+                    todayDietList: dietList[0].oneDayDietList,
+                })
+            })
+            .catch(error => {
+                console.log("Error");
+            });
+
+        // 이번주 식단
+        axios.post('https://api.wellbeeing.xyz/api/week-diet', dietRequest)
+            .then(response => {
+                const { dietList } = response.data;
+                this.setState({
+                    weekDietList: dietList,
+                })
+            })
+            .catch(error => {
+                console.log("Error");
+            });
+
+        // 인바디 정보
+        axios.post('https://api.wellbeeing.xyz/api/inbody-result', inbodyRequest)
+            .then(response => {
+                const { inbodyResult } = response.data;
+                this.setState({
+                    inbodyResult: inbodyResult,
+                })
+            })
+            .catch(error => {
+                console.log("Error");
+            });
+    };
 
     handleChange = (panel) => (event, isExpanded) => {
         this.setState({
@@ -61,6 +108,50 @@ class Main extends Component {
     render() {
         const { classes } = this.props;
         const { expanded } = this.state;
+        const { todayDietList, weekDietList, inbodyResult } = this.state;
+        console.log('== render ==');
+        console.log(inbodyResult);
+        console.log('== render ==');
+        const today = todayDietList.map((today) => {
+            let food;
+            food = today.foodList.map((food) => food.name)
+            return {
+                type: today.type,
+                foodList: food[0],
+            }
+        });
+        const weekList = weekDietList.map((week, index) =>
+            (
+                <Accordion key={index} expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1bh-content"
+                        id="panel1bh-header"
+                    >
+                        <Typography className={classes.heading}>{week.date}</Typography>
+                        <Typography className={classes.secondaryHeading}>하루 식단</Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        {
+                            week.oneDayDietList.map((week, index) =>
+                            <Col md="4" key={"_col_" + index}>
+                                <Card className="mini-stat-wid">
+                                    <CardBody>
+                                        <Media>
+                                            <Media body>
+                                                <h4 className="text-muted font-weight-medium">{week.type}</h4>
+                                                {week.foodList.map((food, index) => <p key={index} className="mb-0"> {food.name} {food.quantity + "개"} {food.calorie +"cal"}<br/></p>)}
+                                            </Media>
+                                        </Media>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                            )
+                        }
+                    </AccordionDetails>
+                </Accordion>
+            )
+        );
         return (
             <React.Fragment>
                 <div className="page-content">
@@ -69,19 +160,19 @@ class Main extends Component {
                             <Col xl="8">
                                 <Row>
                                     {
-                                        this.state.diet.map((diet, key) =>
+                                        today.map((diet, key) =>
                                             <Col md="4" key={"_col_" + key}>
                                                 <Card className="mini-stats-wid">
                                                     <CardBody>
                                                         <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
                                                                 <span className="avatar-title">
-                                                                    <i className={"bx " + diet.iconClass + " font-size-24"}></i>
+                                                                    <i className={"bx " + "bx bx-sun" + " font-size-24"}></i>
                                                                 </span>
                                                         </div>
                                                         <Media>
                                                             <Media body>
-                                                                <p className="text-muted font-weight-medium">{diet.title}</p>
-                                                                <h4 className="mb-0">{diet.description}</h4>
+                                                                <p className="text-muted font-weight-medium">{diet.type}</p>
+                                                                <h4 className="mb-0">{diet.foodList}</h4>
                                                             </Media>
                                                         </Media>
                                                     </CardBody>
@@ -91,143 +182,12 @@ class Main extends Component {
                                     }
                                 </Row>
                                 <div className={classes.root}>
-                                    <Accordion expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel1bh-content"
-                                            id="panel1bh-header"
-                                        >
-                                            <Typography className={classes.heading}>2020.09.04</Typography>
-                                            <Typography className={classes.secondaryHeading}>식단</Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            {
-                                                this.state.diet.map((diet, key) =>
-                                                    <Col md="4" key={"_col_" + key}>
-                                                        <Card className="mini-stats-wid">
-                                                            <CardBody>
-                                                                <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                                                <span className="avatar-title">
-                                                                    <i className={"bx " + diet.iconClass + " font-size-24"}></i>
-                                                                </span>
-                                                                </div>
-                                                                <Media>
-                                                                    <Media body>
-                                                                        <p className="text-muted font-weight-medium">{diet.title}</p>
-                                                                        <h4 className="mb-0">{diet.description}</h4>
-                                                                    </Media>
-                                                                </Media>
-                                                            </CardBody>
-                                                        </Card>
-                                                    </Col>
-                                                )
-                                            }
-                                        </AccordionDetails>
-                                    </Accordion>
-                                    <Accordion expanded={expanded === 'panel2'} onChange={this.handleChange('panel2')}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel2bh-content"
-                                            id="panel2bh-header"
-                                        >
-                                            <Typography className={classes.heading}>2020.09.03</Typography>
-                                            <Typography className={classes.secondaryHeading}>식단</Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            {
-                                                this.state.diet.map((diet, key) =>
-                                                    <Col md="4" key={"_col_" + key}>
-                                                        <Card className="mini-stats-wid">
-                                                            <CardBody>
-                                                                <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                                                <span className="avatar-title">
-                                                                    <i className={"bx " + diet.iconClass + " font-size-24"}></i>
-                                                                </span>
-                                                                </div>
-                                                                <Media>
-                                                                    <Media body>
-                                                                        <p className="text-muted font-weight-medium">{diet.title}</p>
-                                                                        <h4 className="mb-0">{diet.description}</h4>
-                                                                    </Media>
-                                                                </Media>
-                                                            </CardBody>
-                                                        </Card>
-                                                    </Col>
-                                                )
-                                            }
-                                        </AccordionDetails>
-                                    </Accordion>
-                                    <Accordion expanded={expanded === 'panel3'} onChange={this.handleChange('panel3')}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel3bh-content"
-                                            id="panel3bh-header"
-                                        >
-                                            <Typography className={classes.heading}>2020.09.02</Typography>
-                                            <Typography className={classes.secondaryHeading}>식단</Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            {
-                                                this.state.diet.map((diet, key) =>
-                                                    <Col md="4" key={"_col_" + key}>
-                                                        <Card className="mini-stats-wid">
-                                                            <CardBody>
-                                                                <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                                                <span className="avatar-title">
-                                                                    <i className={"bx " + diet.iconClass + " font-size-24"}></i>
-                                                                </span>
-                                                                </div>
-                                                                <Media>
-                                                                    <Media body>
-                                                                        <p className="text-muted font-weight-medium">{diet.title}</p>
-                                                                        <h4 className="mb-0">{diet.description}</h4>
-                                                                    </Media>
-                                                                </Media>
-                                                            </CardBody>
-                                                        </Card>
-                                                    </Col>
-                                                )
-                                            }
-                                        </AccordionDetails>
-                                    </Accordion>
-                                    <Accordion expanded={expanded === 'panel4'} onChange={this.handleChange('panel4')}>
-                                        <AccordionSummary
-                                            expandIcon={<ExpandMoreIcon />}
-                                            aria-controls="panel4bh-content"
-                                            id="panel4bh-header"
-                                        >
-                                            <Typography className={classes.heading}>2020.09.01</Typography>
-                                            <Typography className={classes.secondaryHeading}>식단</Typography>
-                                        </AccordionSummary>
-                                        <AccordionDetails>
-                                            {
-                                                this.state.diet.map((diet, key) =>
-                                                    <Col md="4" key={"_col_" + key}>
-                                                        <Card className="mini-stats-wid">
-                                                            <CardBody>
-                                                                <div className="mini-stat-icon avatar-sm rounded-circle bg-primary align-self-center">
-                                                                <span className="avatar-title">
-                                                                    <i className={"bx " + diet.iconClass + " font-size-24"}></i>
-                                                                </span>
-                                                                </div>
-                                                                <Media>
-                                                                    <Media body>
-                                                                        <p className="text-muted font-weight-medium">{diet.title}</p>
-                                                                        <h4 className="mb-0">{diet.description}</h4>
-                                                                    </Media>
-                                                                </Media>
-                                                            </CardBody>
-                                                        </Card>
-                                                    </Col>
-                                                )
-                                            }
-                                        </AccordionDetails>
-                                    </Accordion>
+                                    {weekList}
                                 </div>
                             </Col>
                             <Col xl="4">
-                                <InbodyProfile />
-                                <InbodyList />
+                                <InbodyProfile inbodyResult={inbodyResult}/>
+                                <InbodyList inbodyResult={inbodyResult}/>
                             </Col>
                         </Row>
                     </Container>
